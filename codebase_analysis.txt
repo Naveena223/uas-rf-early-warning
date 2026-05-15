@@ -1,0 +1,44 @@
+Codebase Analysis: UAS RF Early-Warning Pipeline
+
+Overview
+This codebase implements an Unmanned Aerial System (UAS) Radio Frequency (RF) Early-Warning Pipeline. Its primary purpose is to process passive RF monitoring data, extract features, and use machine learning and rule-based heuristics to classify signals as "UAS-LIKE", "NON-UAS", or "UNKNOWN". If a potential UAS threat is detected, the system generates alerts and logs the events.
+
+Architecture and Workflow
+The system processes data in a streamlined, low-latency pipeline (target processing time is ≤ 2 seconds per segment). The main workflow consists of the following steps:
+1. Parse segment (IQ data or spectrogram)
+2. Extract features (signal power, bandwidth, duty cycle, burst regularity, etc.)
+3. Classify the signal
+4. Perform a library lookup to match known signatures
+5. Emit an alert if the signal is classified as a UAS
+6. Generate JSON logs and summaries
+
+Key Files and Modules
+1. pipeline.py
+This is the core orchestrator. It defines the `UASDetectionPipeline` class, which manages the end-to-end processing. It connects the parser, feature extractor, classifier, library, and alert engine. It also manages statistics and writes summary logs.
+
+2. parsers.py
+This module handles reading raw RF data. It supports two main types of inputs:
+- SigMFParser: Parses standard SigMF datasets, dealing with `.sigmf-meta` (JSON metadata) and `.sigmf-data` (binary complex/IQ data).
+- SpectrogramParser: Parses spectrograms from various formats including `.npz` (NumPy arrays), `.csv`, and image files (`.png`, `.jpg`).
+
+3. classifier.py
+This module contains the `UASClassifier`. It uses a lightweight ensemble model that combines:
+- A Random Forest classifier (primary)
+- A Gradient Boosting classifier (secondary)
+- A physics-informed rule-based fallback model.
+The classifier outputs a label ("UAS-LIKE", "NON-UAS", "UNKNOWN") along with a confidence score. It supports threshold tuning to control false alarm rates (FAR).
+
+4. feature_extractor.py
+While not fully viewed, based on its usage in `pipeline.py`, this module takes raw IQ samples or spectrogram data and extracts specific RF features such as bandwidth, signal power, duty cycle, burst regularity, and modulation indices.
+
+5. alert_engine.py
+This module processes the classification results. If a UAS is detected with sufficient confidence, it emits alerts, aggregates contiguous events, and writes them to a log file.
+
+6. library.py
+This module manages a `SignatureLibrary`. It stores and looks up known UAS signatures (features and frequencies) to match incoming signals against known threats or update the library with new signatures.
+
+7. dataset_generator.py & trainer.py
+These scripts are likely used for training the machine learning models. `dataset_generator.py` probably handles creating or augmenting datasets, while `trainer.py` trains the Random Forest and Gradient Boosting models used in `classifier.py`.
+
+Summary
+Overall, this is a sophisticated, real-time capable signal intelligence (SIGINT) pipeline built in Python. It is designed to passively detect drones/UASs by analyzing RF signatures using a blend of DSP (Digital Signal Processing), heuristics, and Machine Learning.

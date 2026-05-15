@@ -1,0 +1,45 @@
+{
+  "run_info": {
+    "input": "test_data/uas_test.npz",
+    "run_duration_s": 0.012,
+    "completed_at": "2026-05-15T04:43:27.907061+00:00",
+    "alert_log": "logs\\alerts_20260515_044327.json",
+    "library_size": 1
+  },
+  "detection_stats": {
+    "segments_processed": 2,
+    "uas_detections": 2,
+    "unknown_detections": 0,
+    "non_uas_detections": 0,
+    "detection_rate_pct": 100.0
+  },
+  "alert_stats": {
+    "total_alerts": 2,
+    "uas_like_alerts": 2,
+    "unknown_alerts": 0,
+    "total_events": 1,
+    "mean_confidence": 0.6223,
+    "latency_mean_ms": 2.67,
+    "latency_max_ms": 3.82,
+    "latency_p95_ms": 3.82,
+    "latency_budget_met_pct": 100.0,
+    "alerts_above_0_8_confidence": 0
+  },
+  "performance": {
+    "mean_segment_time_ms": 4.76,
+    "max_segment_time_ms": 5.85,
+    "p95_segment_time_ms": 5.85,
+    "throughput_segs_per_s": 172.79
+  },
+  "events": [
+    {
+      "event_id": "EVT-F68FBA",
+      "label": "UAS-LIKE",
+      "start_epoch": 1778820207.901093,
+      "duration_s": 0.8748,
+      "center_freq_hz": 2440000000.0,
+      "peak_confidence": 0.6386,
+      "alert_count": 2
+    }
+  ]
+}
