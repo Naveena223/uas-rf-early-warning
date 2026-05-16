@@ -232,3 +232,19 @@ class UASDetectionPipeline:
         with open(self.summary_path, 'w') as f:
             json.dump(summary, f, indent=2, default=str)
         logger.info(f"Summary written to {self.summary_path}")
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", required=True, help="Path to RF input file or directory")
+    parser.add_argument("--threshold", type=float, default=0.45)
+    parser.add_argument("--output-dir", default="logs")
+    args = parser.parse_args()
+
+    p = UASDetectionPipeline(
+        uas_threshold=args.threshold,
+        output_dir=args.output_dir,
+    )
+    summary = p.run(args.input)
+    print(f"\nAlerts: {summary['detection_stats']['uas_detections']}")
+    print(f"Log: {summary['run_info']['alert_log']}")
